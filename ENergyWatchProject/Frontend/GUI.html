@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Elspot Prices</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <h1>H1</h1>
+    <canvas id="dk1-chart"></canvas>
+    <canvas id="no-chart"></canvas>
+
+    <script>
+        // Fetch the API data
+        fetch("https://api.energidataservice.dk/dataset/Elspotprices?start=now-P1Y&end=now&filter={\"PriceArea\":[\"DK1\",\"NO\"]}&limit=400")
+            .then(response => response.json())
+            .then(data => {
+                // Extract the data for DK1 and NO
+                const dk1Data = data.filter(d => d.PriceArea === "DK1");
+                const noData = data.filter(d => d.PriceArea === "NO");
+
+                // Create a line chart for DK1 prices
+                new Chart(document.getElementById("dk1-chart"), {
+                    type: 'line',
+                    data: {
+                        labels: dk1Data.map(d => d.HourDK),
+                        datasets: [{
+                            label: 'DK1 Prices',
+                            data: dk1Data.map(d => d.SystemPriceDKK),
+                            fill: false,
+                            borderColor: 'rgb(255, 99, 132)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {}
+                });
+
+                // Create a line chart for NO prices
+                new Chart(document.getElementById("no-chart"), {
+                    type: 'line',
+                    data: {
+                        labels: noData.map(d => d.HourUTC),
+                        datasets: [{
+                            label: 'NO Prices',
+                            data: noData.map(d => d.SystemPriceNOK),
+                            fill: false,
+                            borderColor: 'rgb(54, 162, 235)',
+                            tension: 0.1
+                        }]
+                    },
+                    options: {}
+                });
+            })
+            .catch(error => console.error(error));
+    </script>
+</body>
+</html>

@@ -6,7 +6,8 @@ import java.io.InputStreamReader;
 public class APIConnection {
     public static void main(String[] args) {
         try {
-            // set the API URL. Data fra starten af året til nu. Priserne time for time.
+            // set the API URL.
+            // Data fra starten af året til nu. Priserne time for time for DK1 og NO-områderne
             URL url = new URL("https://api.energidataservice.dk/dataset/Elspotprices?start=now-P1Y&end=now&filter={\"PriceArea\":[\"DK1\",\"NO\"]}&limit=400");
 
             // create a connection to the API endpoint
