@@ -19,7 +19,8 @@ public class APIConnection {
             conn.setRequestProperty("Content-Type", "application/json"); //response content type
             conn.setConnectTimeout(5000);
             conn.setReadTimeout(5000);
-
+            
+            
 
             // read the API response
             BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
