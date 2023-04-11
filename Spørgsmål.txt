@@ -1,0 +1,10 @@
+Spørgsmål til Henrik:
+
+Model i MVC: Ligger model bare i DB
+JSON og model forstår jeg ikke hvordan skal håndteres
+
+
+
+
+
+MongoDB docker command: docker run -d -p 27017:27017 --name EnergyDB mongo
