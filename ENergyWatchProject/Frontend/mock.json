@@ -1,0 +1,8 @@
+[
+    {"price": 100, "area": "DK1", "date": "230423"},
+    {"price": 200, "area": "DK2", "date": "230423"},
+    {"price": 300, "area": "DK1", "date": "240423"},
+    {"price": 400, "area": "DK2", "date": "240423"},
+    {"price": 500, "area": "DK1", "date": "250423"},
+    {"price": 600, "area": "DK2", "date": "250423"}
+]
