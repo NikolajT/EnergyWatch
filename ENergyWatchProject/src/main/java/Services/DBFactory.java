@@ -1,18 +1,14 @@
 package Services;
 
+import Model.EnergyPrice;
 import com.mongodb.ConnectionString;
-import com.mongodb.Mongo;
 import com.mongodb.MongoClientSettings;
-import com.mongodb.MongoClientURI;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
-import com.mongodb.client.model.Filters;
-import org.bson.Document;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.codecs.pojo.PojoCodecProvider;
-import org.bson.types.ObjectId;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,8 +16,7 @@ import java.util.List;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
-
-public class DBConnection {
+public class DBFactory implements IDBFactory {
 
     private static final String URL = "localhost";
     private static final String PORT = "27017";
@@ -30,28 +25,20 @@ public class DBConnection {
     /**
      * Lazy singleton for DBConnection
      **/
-    private static DBConnection instance;
+    private static DBFactory instance;
     private static MongoDatabase database;
 
 
-    private DBConnection() {
+    private DBFactory() {
         //constructor
         initializeMongoDatabase();
-
     }
 
-    public static DBConnection getInstance() {
+    public static DBFactory getInstance() {
         if (instance == null) {
-            instance = new DBConnection();
+            instance = new DBFactory();
         }
         return instance;
-    }
-
-
-    public static void main(String[] args) {
-        // Get a handle to the MongoDB database
-        DBConnection database = DBConnection.getInstance();
-
     }
 
     private void initializeMongoDatabase() {
@@ -69,5 +56,25 @@ public class DBConnection {
             if (database == null) System.exit(-1);
         }
     }
+
+    @Override
+    public List<EnergyPrice> getEnergyPrice() {
+        MongoCollection<EnergyPrice> mongoCollection = database.getCollection("Energy", EnergyPrice.class);
+        return mongoCollection.find().into(new ArrayList<>());
+    }
+
+    @Override
+    public void createEnergyPrice(EnergyPrice price) {
+        MongoCollection<EnergyPrice> mongoCollection = database.getCollection("Energy", EnergyPrice.class);
+        mongoCollection.insertOne(price);
+    }
+
+    @Override
+    public void delete(EnergyPrice id) {
+        MongoCollection<EnergyPrice> mongoCollection = database.getCollection("Energy", EnergyPrice.class);
+        mongoCollection.dropIndex(String.valueOf(id));
+    }
+
 }
+
 

@@ -15,10 +15,13 @@ import java.io.InputStreamReader;
  **/
 public class APIConnection {
 
+    public EventManager events;
+    public APIConnection() {
+            this.events = new EventManager("update");
+    }
 
-    public static void getContent() throws Exception {
-        URL url = null;
-        url = new URL("https://api.energidataservice.dk/dataset/Elspotprices?start=now-P1Y&end=now&filter={%22PriceArea%22:[%22DK1%22,%22DK2%22]}&limit=2");
+void getContent() throws Exception {
+        URL url = new URL("https://api.energidataservice.dk/dataset/Elspotprices?start=now-P1Y&end=now&filter={%22PriceArea%22:[%22DK1%22,%22DK2%22]}&limit=2");
 
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
@@ -31,11 +34,9 @@ public class APIConnection {
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
+
+        events.notify("update", content.toString());
         in.close();
         System.out.println(content); /** Outputs JSON. Plan: Parse JSON and use as input in store-method at EnergyPriceController**/
-    }
-
-    public static void main(String[] args) throws Exception {
-        getContent();
     }
 }
