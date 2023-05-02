@@ -1,8 +1,9 @@
 import Services.APIConnection;
+import Services.DBFactory;
 
 public class Main {
-//    public static void main(String[] args) {
-//        APIConnection connection = new APIConnection();
-//        connection.establishConnection();
-//    }
+    public static void main(String[] args) throws Exception {
+
+
+    }
 }

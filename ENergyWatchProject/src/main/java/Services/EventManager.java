@@ -1,5 +1,6 @@
 package Services;
 
+import java.sql.SQLException;
 import java.util.*;
 import Services.EventListener;
 
@@ -23,7 +24,7 @@ public class EventManager {
         users.remove(listener);
     }
 
-    public void notify(String eventtype, String energyData) {
+    public void notify(String eventtype, String energyData) throws SQLException {
         List<EventListener> users = listeners.get(eventtype);
         for (EventListener listener : users) {
             listener.update(eventtype, energyData);

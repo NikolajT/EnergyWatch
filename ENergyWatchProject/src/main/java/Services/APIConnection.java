@@ -1,7 +1,6 @@
 package Services;
 
 import Model.EnergyPrice;
-
 import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -20,7 +19,7 @@ public class APIConnection {
             this.events = new EventManager("update");
     }
 
-void getContent() throws Exception {
+public String getContent() throws Exception {
         URL url = new URL("https://api.energidataservice.dk/dataset/Elspotprices?start=now-P1Y&end=now&filter={%22PriceArea%22:[%22DK1%22,%22DK2%22]}&limit=2");
 
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -34,9 +33,8 @@ void getContent() throws Exception {
         while ((inputLine = in.readLine()) != null) {
             content.append(inputLine);
         }
-
         events.notify("update", content.toString());
         in.close();
-        System.out.println(content); /** Outputs JSON. Plan: Parse JSON and use as input in store-method at EnergyPriceController**/
+        return content.toString();
     }
 }
