@@ -73,6 +73,8 @@ public class DBFactory implements IDBFactory {
             while (resultSet.next()) {
                 String databaseName = resultSet.getString("Database");
                 System.out.println(databaseName);
+                createEnergyPricesTable();
+
             }
 
             // Close the result set, statement, and connection
@@ -84,11 +86,26 @@ public class DBFactory implements IDBFactory {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         } finally {
-            if (database == null) System.exit(-1);
+            if (connection == null) System.exit(-1);
         }
         return connection;
     }
-
+    public void createEnergyPricesTable() throws SQLException {
+        try (Statement statement = connection.createStatement()) {
+            String createTableSql = "CREATE TABLE IF NOT EXISTS energy_prices ("
+                    + "id INT NOT NULL AUTO_INCREMENT,"
+                    + "price_dkk FLOAT,"
+                    + "area TEXT,"
+                    + "date TIMESTAMP,"
+                    + "PRIMARY KEY (id)"
+                    + ")";
+            statement.executeUpdate(createTableSql);
+            System.out.println("Table energy_prices created successfully");
+        } catch (SQLException e) {
+            System.err.println("Error creating energy_prices table: " + e.getMessage());
+            throw e;
+        }
+    }
 //    @Override
 //    public List<EnergyPrice> getEnergyPriceMongo() {
 //        MongoCollection<EnergyPrice> mongoCollection = database.getCollection("Energy", EnergyPrice.class);
