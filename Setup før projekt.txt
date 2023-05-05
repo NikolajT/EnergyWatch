@@ -1,0 +1,3 @@
+DB:
+requires an SQL server running
+jdbc:mysql://localhost:3306
