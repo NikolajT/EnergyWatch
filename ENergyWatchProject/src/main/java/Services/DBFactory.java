@@ -12,12 +12,23 @@ import java.util.UUID;
 import static org.bson.codecs.configuration.CodecRegistries.fromProviders;
 import static org.bson.codecs.configuration.CodecRegistries.fromRegistries;
 
+/**
+ * Defininerer og implementerer metoder til at oprette, læse, opdatere og slette data i databasen
+ **/
 public class DBFactory implements IDBFactory {
-
+    /**
+     * Klassevariabler
+     * **/
+    public static final Connection connection;
     private static final String URL = "localhost";
     private static final String MongoPORT = "27017";
     private static final String MySQLPort = "3306";
-    public static final Connection connection;
+    private static final String DATABASE_NAME = "db";
+    /**
+     * Lazy singleton for DBConnection
+     **/
+    private static DBFactory instance;
+    private static MongoDatabase database;
 
     static {
         try {
@@ -27,19 +38,15 @@ public class DBFactory implements IDBFactory {
         }
     }
 
-    private static final String DATABASE_NAME = "db";
     /**
-     * Lazy singleton for DBConnection
-     **/
-    private static DBFactory instance;
-    private static MongoDatabase database;
-
-
+     * Default constructor
+     * **/
     private DBFactory() {
         //constructor
 //        initializeMongoDatabase();
-        initializeMQSQLDatabase();
+        initializeMySQLDatabase();
     }
+
 
     public static DBFactory getInstance() {
         if (instance == null) {
@@ -47,23 +54,11 @@ public class DBFactory implements IDBFactory {
         }
         return instance;
     }
+    /**
+     *
+     * **/
 
-    //    private void initializeMongoDatabase() {
-//        try {
-//
-//            CodecRegistry pojoCodecRegistry = fromRegistries(MongoClientSettings.getDefaultCodecRegistry(),
-//                    fromProviders(PojoCodecProvider.builder().automatic(true).build()));
-//            MongoClientSettings settings = MongoClientSettings.builder()
-//                    .codecRegistry(pojoCodecRegistry)
-//                    .applyConnectionString(new ConnectionString("mongodb://" + URL + ":" + PORT))
-//                    .build();
-//            MongoClient mongoClient = MongoClients.create(settings);
-//            database = mongoClient.getDatabase(DATABASE_NAME);
-//        } finally {
-//            if (database == null) System.exit(-1);
-//        }
-//    }
-    private Connection initializeMQSQLDatabase() {
+    private Connection initializeMySQLDatabase() {
 
         try {
             Class.forName("com.mysql.jdbc.Driver");
@@ -74,9 +69,7 @@ public class DBFactory implements IDBFactory {
                 String databaseName = resultSet.getString("Database");
                 System.out.println(databaseName);
                 createEnergyPricesTable();
-
             }
-
             // Close the result set, statement, and connection
             resultSet.close();
             statement.close();
@@ -90,10 +83,11 @@ public class DBFactory implements IDBFactory {
         }
         return connection;
     }
+
     public void createEnergyPricesTable() throws SQLException {
         try (Statement statement = connection.createStatement()) {
-            String createTableSql = "CREATE TABLE IF NOT EXISTS energy_prices ("
-                    + "id INT NOT NULL AUTO_INCREMENT,"
+            String createTableSql = "CREATE TABLE IF NOT EXISTS energy_prices (" +
+                    "id INT NOT NULL /** SERIAL, AUTO_INCREMENT? **/,"
                     + "price_dkk FLOAT,"
                     + "area TEXT,"
                     + "date TIMESTAMP,"
@@ -106,41 +100,36 @@ public class DBFactory implements IDBFactory {
             throw e;
         }
     }
-//    @Override
-//    public List<EnergyPrice> getEnergyPriceMongo() {
-//        MongoCollection<EnergyPrice> mongoCollection = database.getCollection("Energy", EnergyPrice.class);
-//        return mongoCollection.find().into(new ArrayList<>());
-//    }
 
     @Override
     public List<EnergyPrice> getEnergyPrice(Connection connection) throws SQLException {
-            // Create a statement for the query
+        // Create a statement for the query
 
-            Statement statement = connection.createStatement();
+        Statement statement = connection.createStatement();
 
-            // Execute the query and get the result set
-            ResultSet resultSet = statement.executeQuery("SHOW DATABASES");
+        // Execute the query and get the result set
+        ResultSet resultSet = statement.executeQuery("SHOW DATABASES");
 
-            // Create a list to hold the EnergyPrice objects
-            List<EnergyPrice> energyPrices = new ArrayList<>();
+        // Create a list to hold the EnergyPrice objects
+        List<EnergyPrice> energyPrices = new ArrayList<>();
 
-            // Loop through the rows of the result set and create EnergyPrice objects
-            while (resultSet.next()) {
-                UUID id = UUID.fromString(resultSet.getString("id"));
-                double spotPrice = resultSet.getDouble("spot_price");
-                String priceArea = resultSet.getString("price_area");
-                Date date = resultSet.getDate("date");
-                EnergyPrice energyPrice = new EnergyPrice(id, spotPrice, priceArea, date);
-                energyPrices.add(energyPrice);
-            }
-
-            // Close the result set and statement
-            resultSet.close();
-            statement.close();
-
-            // Return the list of EnergyPrice objects
-            return energyPrices;
+        // Loop through the rows of the result set and create EnergyPrice objects
+        while (resultSet.next()) {
+            UUID id = UUID.fromString(resultSet.getString("id"));
+            double spotPrice = resultSet.getDouble("spot_price");
+            String priceArea = resultSet.getString("price_area");
+            Date date = resultSet.getDate("date");
+            EnergyPrice energyPrice = new EnergyPrice(id, spotPrice, priceArea, date);
+            energyPrices.add(energyPrice);
         }
+
+        // Close the result set and statement
+        resultSet.close();
+        statement.close();
+
+        // Return the list of EnergyPrice objects
+        return energyPrices;
+    }
 
 
     @Override

@@ -10,8 +10,9 @@ import java.io.BufferedReader;
 import java.io.InputStreamReader;
 
 /**
- * Data fra starten af året til nu. Priserne time for time for DK1 og DK2-områderne
- **/
+ * Definerer en APIConnection klasse, som kan hente data fra en API.
+ *
+ * **/
 public class APIConnection {
 
     public EventManager events;
