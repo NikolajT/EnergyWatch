@@ -1,3 +1,8 @@
+/**
+ * @fileoverview Broker class for PubSub pattern * 
+ */
+
+//constructor for a subscriber
 export default class Broker {
     constructor() {
         this._subscribers = [];

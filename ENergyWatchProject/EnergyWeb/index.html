@@ -1,0 +1,31 @@
+<!--index.html is the main page of the website. It contains the tab for the two charts and the script for opening the tab.-->
+<!DOCTYPE html>
+<html>
+<script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+<script defer src="tab.js"></script>
+<link rel="stylesheet" type="text/css" href="style.css">
+<head>
+    <title>Energy Watch Denmark</title>
+</head>
+<body>
+    <h2>Energy Watch Denmark</h2>
+    <!--Links for opening tab-->
+    <div class="tab">
+        <button class="tablinks" onclick="openTap(event, 'west')" id="defaultOpen">West</button>
+        <button class="tablinks" onclick="openTap(event, 'east')">East</button>
+    </div>
+    <!--Tab content-->
+    <div id="west" class="tabcontent">
+        <h3>West</h3>
+            <div id="westChart" style="width:100%; max-width:800px; height:600px;"></div>
+            <script type="text/javascript" src="vest.js"></script>
+            <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
+    </div>
+    <div id="east" class="tabcontent">
+        <h3>East</h3>
+            <div id="eastChart" style="width:100%; max-width:600px; height:500px;"></div>
+            <script type="text/javascript" src="east.js"></script>
+            <span onclick="this.parentElement.style.display='none'" class="topright">&times</span>
+    </div>
+</body>
+</html>
